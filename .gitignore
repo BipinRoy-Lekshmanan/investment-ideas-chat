@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Source document and extracted text are proprietary — never commit these.
+data/*.pdf
+data/*.txt
+!data/README.md
