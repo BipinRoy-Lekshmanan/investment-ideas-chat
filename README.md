@@ -8,7 +8,7 @@ application end to end: prompt design, a simple grounding strategy, a web
 UI, and a live free-tier deployment — kept deliberately small so the whole
 thing fits in your head at once.
 
-**Live demo:** _add your Render URL here after deploying_
+**Live demo:** https://investment-ideas-chat.onrender.com/
 **Stack:** Python, OpenAI API, Gradio, Render
 
 ---
