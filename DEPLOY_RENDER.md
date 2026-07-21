@@ -62,9 +62,12 @@ Under **Environment Variables**, add:
 | `OPENAI_API_KEY` | your OpenAI key |
 | `GRADIO_SERVER_NAME` | `0.0.0.0` |
 | `GRADIO_SERVER_PORT` | `10000` |
+| `DOCUMENT_TEXT_PATH` | `/etc/secrets/data/document.txt` |
 
-Render expects your app to listen on port 10000. Gradio reads the last two
+Render expects your app to listen on port 10000. Gradio reads the first two
 variables at startup to know where to bind — no code changes needed.
+
+The last one matters because of how Render's Secret Files work — see Step 5.
 
 Optionally also set `DOCUMENT_TITLE` if you want a name other than
 "Investment Ideas Report".
@@ -83,6 +86,15 @@ This is the step that keeps the report itself off GitHub.
    larger, see the "Scaling past full-context" section in
    [ARCHITECTURE.md](ARCHITECTURE.md) about switching to retrieval instead
    of shipping the whole document.)
+
+Render doesn't write Secret Files to your repo's working directory — it
+always mounts them under `/etc/secrets/`, preserving whatever path you typed
+as the filename. So a Secret File named `data/document.txt` actually ends up
+on disk at `/etc/secrets/data/document.txt`, not `data/document.txt`. That's
+why Step 4 sets `DOCUMENT_TEXT_PATH` to that `/etc/secrets/...` path — it
+tells `context.py` where to actually look. If you name the secret file
+something else, update `DOCUMENT_TEXT_PATH` to match (same relative path,
+`/etc/secrets/` prefix).
 
 ## Step 6: Deploy
 
@@ -111,6 +123,7 @@ Add that URL to the top of `README.md` and to your LinkedIn project entry.
   `OPENAI_API_KEY` missing or mistyped, or the Secret File wasn't saved with
   exactly the filename `data/document.txt`. Check the Environment tab, then
   use **Manual Deploy** to restart.
-- **"FileNotFoundError: data/document.txt not found"** in the logs — the
-  Secret File either wasn't added or has a different filename than
-  `context.py` expects (`DOCUMENT_TEXT_PATH`, default `data/document.txt`).
+- **"FileNotFoundError: data/document.txt not found"** in the logs — almost
+  always means `DOCUMENT_TEXT_PATH` isn't set to the `/etc/secrets/...` path
+  described in Step 5. Double check the env var matches the Secret File's
+  filename exactly, then trigger a Manual Deploy.
